@@ -252,6 +252,14 @@ public:
         IssuedBId = id;
         issueDate = d;
     }
+    int getIssuedId()
+    {
+        return IssuedBId;
+    }
+    Date getIssuedDate()
+    {
+        return issueDate;
+    }
     void display()
     {
         cout << "-----------------------------------------" << endl;
@@ -270,6 +278,9 @@ class User
     int age;
     IssuedBook books[10];
     int borrowed;
+    int maxDaysAllowed;
+    int finePerDay;
+    int totalFine;
 
 public:
     User()
@@ -336,6 +347,73 @@ void issueBook(User &u, Book &b)
     cout << "-----------------------------------------" << endl;
     cout << "Book Issued!!" << endl;
     cout << "-----------------------------------------" << endl;
+}
+
+void returnBook(User &u, Book &b)
+{
+    int found = 0;
+    for (int i = 0; i < u.borrowed; i++)
+    {
+        int tempId = u.books[i].getIssuedId();
+        if (tempId == b.bookId)
+        {
+            found = 1;
+            int d, m, y;
+            cout << "Enter today's date,month and year:" << endl;
+            cin >> d >> m >> y;
+            Date today(d, m, y);
+            int d1 = today.getDays();
+            Date issue = u.books[i].getIssuedDate();
+            int d2 = issue.getDays();
+            if (d1 < d2)
+            {
+                cout << "Return day cannot be before issued date!!" << endl;
+                return;
+            }
+            if (d1 - d2 > u.maxDaysAllowed)
+            {
+                int delay = d1 - d2 - u.maxDaysAllowed;
+                u.totalFine = delay * u.finePerDay;
+                cout << "You are returning this book " << delay << " days late!" << endl;
+                cout << "Pay Fine of rupees: " << u.totalFine;
+                int paid = 0;
+                cout << "1. If it is paid" << endl;
+                cout << "Enter.." << endl;
+                cin >> paid;
+                if (paid == 1)
+                {
+                    u.totalFine = 0;
+                    for (int j = i; j < u.borrowed - 1; j++)
+                    {
+                        u.books[j] = u.books[j + 1];
+                    }
+                    u.borrowed--;
+                    b.available++;
+                    b.issued--;
+                }
+                else
+                {
+                    cout << "Pay your fine first!!" << endl;
+                    return;
+                }
+            }
+            else
+            {
+                for (int j = i; j < u.borrowed - 1; j++)
+                {
+                    u.books[j] = u.books[j + 1];
+                }
+                u.borrowed--;
+                b.available++;
+                b.issued--;
+            }
+            break;
+        }
+    }
+    if (!found)
+    {
+        cout << "This book is not issued by this user!!" << endl;
+    }
 }
 
 int main()
