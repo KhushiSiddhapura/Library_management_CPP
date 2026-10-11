@@ -285,7 +285,13 @@ class User
 public:
     User()
     {
+        userId = 0;
+        name = "";
+        age = 0;
         borrowed = 0;
+        maxDaysAllowed = 0;
+        finePerDay = 0;
+        totalFine = 0;
     }
     User(int id, string n, int a)
     {
@@ -438,20 +444,27 @@ int main()
             int n;
             cout << "Enter number of books: " << endl;
             cin >> n;
-            int start = number;
-            number += n;
-            for (int i = start; i < number; i++)
+            if (n < 0 || n > 1000)
             {
-                int id, pgs, avl, iss;
-                string name;
-                cout << "Enter Details of " << n << " books" << endl;
-                cout << "Enter Book ID, name, pages, avaiable copies and issued copies:" << endl;
-                cin >> id >> name >> pgs >> avl >> iss;
-                b[i] = Book(id, name, pgs, avl, iss);
+                cout << "Invalid number of books!!" << endl;
             }
-            for (int i = start; i < number; i++)
+            else
             {
-                b[i].display();
+                int start = number;
+                number += n;
+                for (int i = start; i < number; i++)
+                {
+                    int id, pgs, avl, iss;
+                    string name;
+                    cout << "Enter Details of " << n << " books" << endl;
+                    cout << "Enter Book ID, name, pages, avaiable copies and issued copies:" << endl;
+                    cin >> id >> name >> pgs >> avl >> iss;
+                    b[i] = Book(id, name, pgs, avl, iss);
+                }
+                for (int i = start; i < number; i++)
+                {
+                    b[i].display();
+                }
             }
         }
         else if (choice == 2)
@@ -506,6 +519,10 @@ int main()
                     }
                     break;
                 }
+                else
+                {
+                    cout << "Book not found!" << endl;
+                }
             }
         }
         else if (choice == 3)
@@ -527,6 +544,10 @@ int main()
                 {
                     b[i].display();
                     break;
+                }
+                else
+                {
+                    cout << "Book not found!" << endl;
                 }
             }
         }
