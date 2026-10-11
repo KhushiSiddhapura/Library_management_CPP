@@ -77,8 +77,8 @@ public:
         cout << "Issued Copies: " << issued << endl;
         cout << "-----------------------------------------" << endl;
     }
-    friend void issueBook(User u, Book b);
-    friend void returnBook(User u, Book b);
+    friend void issueBook(User &u, Book &b);
+    friend void returnBook(User &u, Book &b);
 };
 
 class Date
@@ -246,6 +246,7 @@ class IssuedBook
     Date issueDate;
 
 public:
+    IssuedBook() {}
     IssuedBook(int id, Date d)
     {
         IssuedBId = id;
@@ -261,6 +262,81 @@ public:
         issueDate.displayDate();
     }
 };
+
+class User
+{
+    int userId;
+    string name;
+    int age;
+    IssuedBook books[10];
+    int borrowed;
+
+public:
+    User()
+    {
+        borrowed = 0;
+    }
+    User(int id, string n, int a)
+    {
+        userId = id;
+        name = n;
+        age = a;
+        borrowed = 0;
+    }
+    void display()
+    {
+        cout << "User ID: " << userId << endl;
+        cout << "Name: " << name << endl;
+        cout << "Age: " << age << endl;
+    }
+    void updateName()
+    {
+        display();
+        cout << "Enter updated name of user:" << endl;
+        cin >> name;
+    }
+    void updateAge()
+    {
+        display();
+        cout << "Enter updated age of user:" << endl;
+        cin >> age;
+    }
+    void updateUser()
+    {
+        display();
+        cout << "Enter updated name and age of user:" << endl;
+        cin >> name >> age;
+    }
+    friend void issueBook(User &u, Book &b);
+    friend void returnBook(User &u, Book &b);
+};
+
+void issueBook(User &u, Book &b)
+{
+    if (u.borrowed >= 10)
+    {
+        cout << "You can't borrow more than 10 books!" << endl;
+        return;
+    }
+    if (b.available <= 0)
+    {
+        cout << "Book is not available!" << endl;
+        return;
+    }
+    int id = b.bookId;
+    int d, m, y;
+    cout << "Enter today's date, month and year: " << endl;
+    cin >> d >> m >> y;
+    Date issuedDate(d, m, y);
+    IssuedBook isb(id, issuedDate);
+    u.books[u.borrowed] = isb;
+    u.borrowed++;
+    b.available--;
+    b.issued++;
+    cout << "-----------------------------------------" << endl;
+    cout << "Book Issued!!" << endl;
+    cout << "-----------------------------------------" << endl;
+}
 
 int main()
 {
