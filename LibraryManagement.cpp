@@ -273,6 +273,7 @@ public:
 
 class User
 {
+protected:
     int userId;
     string name;
     int age;
@@ -281,6 +282,7 @@ class User
     int maxDaysAllowed;
     int finePerDay;
     int totalFine;
+    string type;
 
 public:
     User()
@@ -326,6 +328,60 @@ public:
     }
     friend void issueBook(User &u, Book &b);
     friend void returnBook(User &u, Book &b);
+};
+
+class Student : public User
+{
+public:
+    Student(int id, string n, int a) : User(id, n, a)
+    {
+        type = "Student";
+        maxDaysAllowed = 15;
+        finePerDay = 2;
+        totalFine = 0;
+    }
+
+    void display()
+    {
+        User::display();
+        cout << "Type: " << type << endl;
+    }
+};
+
+class Faculty : public User
+{
+public:
+    Faculty(int id, string n, int a) : User(id, n, a)
+    {
+        type = "Faculty";
+        maxDaysAllowed = 30;
+        finePerDay = 1;
+        totalFine = 0;
+    }
+
+    void display()
+    {
+        User::display();
+        cout << "Type: " << type << endl;
+    }
+};
+
+class Guest : public User
+{
+public:
+    Guest(int id, string n, int a) : User(id, n, a)
+    {
+        type = "Guest";
+        maxDaysAllowed = 7;
+        finePerDay = 5;
+        totalFine = 0;
+    }
+
+    void display()
+    {
+        User::display();
+        cout << "Type: " << type << endl;
+    }
 };
 
 void issueBook(User &u, Book &b)
