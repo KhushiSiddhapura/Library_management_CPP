@@ -81,10 +81,151 @@ public:
     friend void returnBook(User u, Book b);
 };
 
-class User{
-    int userId;
-    string userName;
-    int age;
+class Date
+{
+    int date, month, year;
+
+public:
+    Date()
+    {
+        date = 1;
+        month = 1;
+        year = 2000;
+    }
+    Date(int d, int m, int y)
+    {
+        if (y >= 2000)
+        {
+            year = y;
+        }
+        else
+        {
+            year = 2000;
+            cout << "Entered year is invalid!" << endl
+                 << "Setting it to default year(2000)" << endl;
+        }
+        if (m > 0 && m <= 12)
+        {
+            month = m;
+            if (m == 4 || m == 6 || m == 9 || m == 11)
+            {
+                if (d > 0 && d <= 30)
+                {
+                    date = d;
+                }
+                else
+                {
+                    date = 1;
+                    cout << "Entered date is invalid" << endl
+                         << "Setting it to default date(1)" << endl;
+                }
+            }
+            else if (m == 2)
+            {
+                if (isLeapYear(year))
+                {
+                    if (d > 0 && d <= 29)
+                    {
+                        date = d;
+                    }
+                    else
+                    {
+                        date = 1;
+                        cout << "Entered date is invalid" << endl
+                             << "Setting it to default date(1)" << endl;
+                    }
+                }
+                else
+                {
+                    if (d > 0 && d <= 28)
+                    {
+                        date = d;
+                    }
+                    else
+                    {
+                        date = 1;
+                        cout << "Entered date is invalid" << endl
+                             << "Setting it to default date(1)" << endl;
+                    }
+                }
+            }
+            else
+            {
+                if (d > 0 && d <= 31)
+                {
+                    date = d;
+                }
+                else
+                {
+                    date = 1;
+                    cout << "Entered date is invalid" << endl
+                         << "Setting it to default date(1)" << endl;
+                }
+            }
+        }
+        else
+        {
+            month = 1;
+            date = 1;
+            cout << "Entered month is invalid" << endl
+                 << "Setting date and month to default (1st January)" << endl;
+        }
+    }
+    void displayDate()
+    {
+        cout << date << "/" << month << "/" << year << endl;
+    }
+    int isLeapYear(int y)
+    {
+        if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    int getDays()
+    {
+        int days = 0;
+        for (int y = 2000; y < year; y++)
+        {
+            if (isLeapYear(y))
+            {
+                days += 366;
+            }
+            else
+            {
+                days += 365;
+            }
+        }
+        int months[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        if (isLeapYear(year))
+        {
+            months[1] = 29;
+        }
+        for (int m = 1; m < month; m++)
+        {
+            days += months[m - 1];
+        }
+        days += date;
+
+        return days;
+    }
+    int countDays(Date d)
+    {
+        int d1 = getDays();
+        int d2 = d.getDays();
+        if (d1 > d2)
+        {
+            return (d1 - d2);
+        }
+        else
+        {
+            return (d2 - d1);
+        }
+    }
 };
 
 int main()
