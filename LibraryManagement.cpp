@@ -226,6 +226,40 @@ public:
             return (d2 - d1);
         }
     }
+    int getDate()
+    {
+        return date;
+    }
+    int getMonth()
+    {
+        return month;
+    }
+    int getYear()
+    {
+        return year;
+    }
+};
+
+class IssuedBook
+{
+    int IssuedBId;
+    Date issueDate;
+
+public:
+    IssuedBook(int id, Date d)
+    {
+        IssuedBId = id;
+        issueDate = d;
+    }
+    void display()
+    {
+        cout << "-----------------------------------------" << endl;
+        cout << "Issued Book:" << endl;
+        cout << "-----------------------------------------" << endl;
+        cout << "Book Id: " << IssuedBId << endl;
+        cout << "Issued date";
+        issueDate.displayDate();
+    }
 };
 
 int main()
@@ -234,7 +268,7 @@ int main()
     cout << "WELCOME TO LIBRARY MANAGEMENT SYSTEM" << endl;
     cout << "-----------------------------------------" << endl;
     char ch;
-    Book b[100];
+    Book b[1000];
     int number = 0;
     do
     {
