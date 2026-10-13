@@ -274,6 +274,7 @@ public:
 class User
 {
 protected:
+    static int nextId;
     int userId;
     string name;
     int age;
@@ -287,7 +288,7 @@ protected:
 public:
     User()
     {
-        userId = 0;
+        userId = nextId++;
         name = "";
         age = 0;
         borrowed = 0;
@@ -295,9 +296,8 @@ public:
         finePerDay = 0;
         totalFine = 0;
     }
-    User(int id, string n, int a)
+    User(string n, int a)
     {
-        userId = id;
         name = n;
         age = a;
         borrowed = 0;
@@ -338,7 +338,7 @@ class Student : public User
 {
 public:
     Student() {}
-    Student(int id, string n, int a) : User(id, n, a)
+    Student(string n, int a) : User(n, a)
     {
         type = "Student";
         maxDaysAllowed = 15;
@@ -357,7 +357,7 @@ class Faculty : public User
 {
 public:
     Faculty() {}
-    Faculty(int id, string n, int a) : User(id, n, a)
+    Faculty(string n, int a) : User(n, a)
     {
         type = "Faculty";
         maxDaysAllowed = 30;
@@ -376,7 +376,7 @@ class Guest : public User
 {
 public:
     Guest() {}
-    Guest(int id, string n, int a) : User(id, n, a)
+    Guest(string n, int a) : User(n, a)
     {
         type = "Guest";
         maxDaysAllowed = 7;
@@ -485,6 +485,7 @@ void returnBook(User &u, Book &b)
     }
 }
 
+int User::nextId = 1;
 int main()
 {
     cout << "-----------------------------------------" << endl;
@@ -514,6 +515,7 @@ int main()
         cout << "09. Display Faculty users" << endl;
         cout << "10. Display Guest users" << endl;
         cout << "11. Display a user" << endl;
+        cout << "12. Remove User" << endl;
         cout << "12. Issue a book" << endl;
         cout << "13. Return a book" << endl;
         cout << "Enter.." << endl;
@@ -654,11 +656,11 @@ int main()
                     sCount += n;
                     for (int i = start; i < sCount; i++)
                     {
-                        int id, age;
+                        int age;
                         string name;
-                        cout << "Enter User id, name and age" << endl;
-                        cin >> id >> name >> age;
-                        s[i] = Student(id, name, age);
+                        cout << "Enter User Name and age" << endl;
+                        cin >> name >> age;
+                        s[i] = Student(name, age);
                     }
                     for (int i = start; i < sCount; i++)
                     {
@@ -671,11 +673,11 @@ int main()
                     fCount += n;
                     for (int i = start; i < fCount; i++)
                     {
-                        int id, age;
+                        int age;
                         string name;
-                        cout << "Enter User id, name and age" << endl;
-                        cin >> id >> name >> age;
-                        f[i] = Faculty(id, name, age);
+                        cout << "Enter User Name and age" << endl;
+                        cin >> name >> age;
+                        f[i] = Faculty(name, age);
                     }
                     for (int i = start; i < fCount; i++)
                     {
@@ -688,11 +690,11 @@ int main()
                     gCount += n;
                     for (int i = start; i < gCount; i++)
                     {
-                        int id, age;
+                        int age;
                         string name;
-                        cout << "Enter User id, name and age" << endl;
-                        cin >> id >> name >> age;
-                        g[i] = Guest(id, name, age);
+                        cout << "Enter User Name and age" << endl;
+                        cin >> name >> age;
+                        g[i] = Guest(name, age);
                     }
                     for (int i = start; i < gCount; i++)
                     {
