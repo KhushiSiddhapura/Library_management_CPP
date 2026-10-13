@@ -23,22 +23,6 @@ public:
     {
         return bookId;
     }
-    string getName()
-    {
-        return bookName;
-    }
-    int getPages()
-    {
-        return pages;
-    }
-    int getAvailable()
-    {
-        return available;
-    }
-    int getIssued()
-    {
-        return issued;
-    }
     void update(string name, int pgs, int av, int iss)
     {
         bookName = name;
@@ -85,8 +69,19 @@ public:
 class Date
 {
     int date, month, year;
-
-public:
+    
+    int isLeapYear(int y)
+    {
+        if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
+        {
+            return 1;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+    public:
     Date()
     {
         date = 1;
@@ -176,17 +171,6 @@ public:
     {
         cout << date << "/" << month << "/" << year << endl;
     }
-    int isLeapYear(int y)
-    {
-        if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
-        {
-            return 1;
-        }
-        else
-        {
-            return 0;
-        }
-    }
     int getDays()
     {
         int days = 0;
@@ -226,18 +210,6 @@ public:
         {
             return (d2 - d1);
         }
-    }
-    int getDate()
-    {
-        return date;
-    }
-    int getMonth()
-    {
-        return month;
-    }
-    int getYear()
-    {
-        return year;
     }
 };
 
@@ -316,6 +288,10 @@ public:
     int getId()
     {
         return userId;
+    }
+    int getBorrowed()
+    {
+        return borrowed;
     }
     void updateName()
     {
@@ -530,7 +506,7 @@ int main()
             int n;
             cout << "Enter number of books: " << endl;
             cin >> n;
-            if (n < 0 || n > 1000)
+            if (n < 0 || n > 1000 - number)
             {
                 cout << "Invalid number of books!!" << endl;
             }
@@ -657,57 +633,81 @@ int main()
                 cout << "2. Faculty users" << endl;
                 cout << "3. Guest users" << endl;
                 cin >> uChoice;
-                userCount += n;
 
                 if (uChoice == 1)
                 {
-                    int start = sCount;
-                    sCount += n;
-                    for (int i = start; i < sCount; i++)
+                    userCount += n;
+                    if (100 - sCount < n)
                     {
-                        int age;
-                        string name;
-                        cout << "Enter User Name and age" << endl;
-                        cin >> name >> age;
-                        s[i] = Student(name, age);
+                        cout << "Could not create student users!" << endl;
                     }
-                    for (int i = start; i < sCount; i++)
+                    else
                     {
-                        s[i].display();
+                        userCount += n;
+                        int start = sCount;
+                        sCount += n;
+                        for (int i = start; i < sCount; i++)
+                        {
+                            int age;
+                            string name;
+                            cout << "Enter User Name and age" << endl;
+                            cin >> name >> age;
+                            s[i] = Student(name, age);
+                        }
+                        for (int i = start; i < sCount; i++)
+                        {
+                            s[i].display();
+                        }
                     }
                 }
                 else if (uChoice == 2)
                 {
-                    int start = fCount;
-                    fCount += n;
-                    for (int i = start; i < fCount; i++)
+                    if (100 - fCount < n)
                     {
-                        int age;
-                        string name;
-                        cout << "Enter User Name and age" << endl;
-                        cin >> name >> age;
-                        f[i] = Faculty(name, age);
+                        cout << "Could not create faculty users!" << endl;
                     }
-                    for (int i = start; i < fCount; i++)
+                    else
                     {
-                        f[i].display();
+                        userCount += n;
+                        int start = fCount;
+                        fCount += n;
+                        for (int i = start; i < fCount; i++)
+                        {
+                            int age;
+                            string name;
+                            cout << "Enter User Name and age" << endl;
+                            cin >> name >> age;
+                            f[i] = Faculty(name, age);
+                        }
+                        for (int i = start; i < fCount; i++)
+                        {
+                            f[i].display();
+                        }
                     }
                 }
                 else if (uChoice == 3)
                 {
-                    int start = gCount;
-                    gCount += n;
-                    for (int i = start; i < gCount; i++)
+                    if (100 - gCount < n)
                     {
-                        int age;
-                        string name;
-                        cout << "Enter User Name and age" << endl;
-                        cin >> name >> age;
-                        g[i] = Guest(name, age);
+                        cout << "Could not create student users!" << endl;
                     }
-                    for (int i = start; i < gCount; i++)
+                    else
                     {
-                        g[i].display();
+                        userCount += n;
+                        int start = gCount;
+                        gCount += n;
+                        for (int i = start; i < gCount; i++)
+                        {
+                            int age;
+                            string name;
+                            cout << "Enter User Name and age" << endl;
+                            cin >> name >> age;
+                            g[i] = Guest(name, age);
+                        }
+                        for (int i = start; i < gCount; i++)
+                        {
+                            g[i].display();
+                        }
                     }
                 }
                 else
@@ -901,13 +901,21 @@ int main()
             {
                 if (id == s[i].getId())
                 {
-                    for (int j = i; j < sCount - 1; j++)
+                    if (s[i].getBorrowed() > 0)
                     {
-                        s[j] = s[j + 1];
+                        cout << "User has borrowed book!" << endl;
+                        cout << "User deletation failed!" << endl;
                     }
-                    sCount--;
-                    found = 1;
-                    break;
+                    else
+                    {
+                        for (int j = i; j < sCount - 1; j++)
+                        {
+                            s[j] = s[j + 1];
+                        }
+                        sCount--;
+                        found = 1;
+                        break;
+                    }
                 }
             }
             if (!found)
@@ -916,13 +924,21 @@ int main()
                 {
                     if (id == f[i].getId())
                     {
-                        for (int j = i; j < fCount - 1; j++)
+                        if (f[i].getBorrowed() > 0)
                         {
-                            f[j] = f[j + 1];
+                            cout << "User has borrowed book!" << endl;
+                            cout << "User deletation failed!" << endl;
                         }
-                        fCount--;
-                        found = 1;
-                        break;
+                        else
+                        {
+                            for (int j = i; j < fCount - 1; j++)
+                            {
+                                f[j] = f[j + 1];
+                            }
+                            fCount--;
+                            found = 1;
+                            break;
+                        }
                     }
                 }
             }
@@ -932,13 +948,21 @@ int main()
                 {
                     if (id == g[i].getId())
                     {
-                        for (int j = i; j < gCount - 1; j++)
+                        if (g[i].getBorrowed() > 0)
                         {
-                            g[j] = g[j + 1];
+                            cout << "User has borrowed book!" << endl;
+                            cout << "User deletation failed!" << endl;
                         }
-                        gCount--;
-                        found = 1;
-                        break;
+                        else
+                        {
+                            for (int j = i; j < gCount - 1; j++)
+                            {
+                                g[j] = g[j + 1];
+                            }
+                            gCount--;
+                            found = 1;
+                            break;
+                        }
                     }
                 }
             }
@@ -986,7 +1010,7 @@ int main()
                     {
                         for (int j = 0; j < gCount; j++)
                         {
-                            if (g[i].getId() == id)
+                            if (g[j].getId() == id)
                             {
                                 userFound = 1;
                                 issueBook(g[j], b[i]);
@@ -1045,7 +1069,7 @@ int main()
                     {
                         for (int j = 0; j < gCount; j++)
                         {
-                            if (g[i].getId() == id)
+                            if (g[j].getId() == id)
                             {
                                 userFound = 1;
                                 returnBook(g[j], b[i]);
