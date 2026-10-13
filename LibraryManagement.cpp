@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 class User;
@@ -555,7 +556,7 @@ int main()
         else if (choice == 2)
         {
             int id;
-            int found;
+            int found = 0;
             cout << "Enter ID of book" << endl;
             cin >> id;
             for (int i = 0; i < number; i++)
@@ -630,6 +631,7 @@ int main()
                 int bId = b[i].getId();
                 if (bId == id)
                 {
+                    found = 1;
                     b[i].display();
                     break;
                 }
@@ -947,9 +949,121 @@ int main()
         }
         else if (choice == 13)
         {
+            int bId, uId, found = 0;
+            cout << "Enter Book ID:" << endl;
+            cin >> bId;
+            for (int i = 0; i < number; i++)
+            {
+                if (b[i].getId() == bId)
+                {
+                    found = 1;
+                    int id;
+                    cout << "Enter User ID:" << endl;
+                    cin >> id;
+                    int userFound = 0;
+                    for (int j = 0; j < sCount; j++)
+                    {
+                        if (s[j].getId() == id)
+                        {
+                            userFound = 1;
+                            issueBook(s[j], b[i]);
+                            break;
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        for (int j = 0; j < fCount; j++)
+                        {
+                            if (f[j].getId() == id)
+                            {
+                                userFound = 1;
+                                issueBook(f[j], b[i]);
+                                break;
+                            }
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        for (int j = 0; j < gCount; j++)
+                        {
+                            if (g[i].getId() == id)
+                            {
+                                userFound = 1;
+                                issueBook(g[j], b[i]);
+                                break;
+                            }
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        cout << "User not found!" << endl;
+                    }
+                    break;
+                }
+            }
+            if (!found)
+            {
+                cout << "Book not found!" << endl;
+            }
         }
         else if (choice == 14)
         {
+            int bId, uId, found = 0;
+            cout << "Enter Book ID:" << endl;
+            cin >> bId;
+            for (int i = 0; i < number; i++)
+            {
+                if (b[i].getId() == bId)
+                {
+                    found = 1;
+                    int id;
+                    cout << "Enter User ID:" << endl;
+                    cin >> id;
+                    int userFound = 0;
+                    for (int j = 0; j < sCount; j++)
+                    {
+                        if (s[j].getId() == id)
+                        {
+                            userFound = 1;
+                            returnBook(s[j], b[i]);
+                            break;
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        for (int j = 0; j < fCount; j++)
+                        {
+                            if (f[j].getId() == id)
+                            {
+                                userFound = 1;
+                                returnBook(f[j], b[i]);
+                                break;
+                            }
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        for (int j = 0; j < gCount; j++)
+                        {
+                            if (g[i].getId() == id)
+                            {
+                                userFound = 1;
+                                returnBook(g[j], b[i]);
+                                break;
+                            }
+                        }
+                    }
+                    if (!userFound)
+                    {
+                        cout << "User not found!" << endl;
+                    }
+                    break;
+                }
+            }
+            if (!found)
+            {
+                cout << "Book not found!" << endl;
+            }
         }
         else
         {
