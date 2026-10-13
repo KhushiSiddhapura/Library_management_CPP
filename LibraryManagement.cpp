@@ -516,8 +516,8 @@ int main()
         cout << "10. Display Guest users" << endl;
         cout << "11. Display a user" << endl;
         cout << "12. Remove User" << endl;
-        cout << "12. Issue a book" << endl;
-        cout << "13. Return a book" << endl;
+        cout << "13. Issue a book" << endl;
+        cout << "14. Return a book" << endl;
         cout << "Enter.." << endl;
         cin >> choice;
         if (choice == 1)
@@ -858,75 +858,55 @@ int main()
         }
         else if (choice == 11)
         {
-            int uChoice;
-            cout << "1. Student user" << endl;
-            cout << "2. faculty user" << endl;
-            cout << "3. guest user" << endl;
-            cout << "Enter.." << endl;
-            cin >> uChoice;
             int id;
-            cout << "Enter Id:" << endl;
+            cout << "Enter User ID: " << endl;
             cin >> id;
-            if (uChoice == 1)
+            int found = 0;
+            for (int i = 0; i < sCount; i++)
             {
-                int found = 0;
-                for (int i = 0; i < sCount; i++)
+                if (id == s[i].getId())
                 {
-                    if (id == s[i].getId())
-                    {
-                        found = 1;
-                        s[i].display();
-                        break;
-                    }
-                }
-                if (!found)
-                {
-                    cout << "User not found!" << endl;
+                    s[i].display();
+                    found = 1;
+                    break;
                 }
             }
-            else if (uChoice == 2)
+            if (!found)
             {
-                int found = 0;
                 for (int i = 0; i < fCount; i++)
                 {
                     if (id == f[i].getId())
                     {
-                        found = 1;
                         f[i].display();
+                        found = 1;
                         break;
                     }
                 }
-                if (!found)
-                {
-                    cout << "User not found!" << endl;
-                }
             }
-            else if (uChoice == 3)
+            if (!found)
             {
-                int found = 0;
                 for (int i = 0; i < gCount; i++)
                 {
                     if (id == g[i].getId())
                     {
-                        found = 1;
                         g[i].display();
+                        found = 1;
                         break;
                     }
                 }
-                if (!found)
-                {
-                    cout << "User not found!" << endl;
-                }
             }
-            else
+            if (!found)
             {
-                cout << "Invalid choice!" << endl;
+                cout << "User not found!" << endl;
             }
         }
         else if (choice == 12)
         {
         }
         else if (choice == 13)
+        {
+        }
+        else if (choice == 14)
         {
         }
         else
