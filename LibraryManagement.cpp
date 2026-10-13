@@ -308,6 +308,10 @@ public:
         cout << "Name: " << name << endl;
         cout << "Age: " << age << endl;
     }
+    int getId()
+    {
+        return userId;
+    }
     void updateName()
     {
         display();
@@ -333,6 +337,7 @@ public:
 class Student : public User
 {
 public:
+    Student() {}
     Student(int id, string n, int a) : User(id, n, a)
     {
         type = "Student";
@@ -351,6 +356,7 @@ public:
 class Faculty : public User
 {
 public:
+    Faculty() {}
     Faculty(int id, string n, int a) : User(id, n, a)
     {
         type = "Faculty";
@@ -369,6 +375,7 @@ public:
 class Guest : public User
 {
 public:
+    Guest() {}
     Guest(int id, string n, int a) : User(id, n, a)
     {
         type = "Guest";
@@ -485,14 +492,30 @@ int main()
     cout << "-----------------------------------------" << endl;
     char ch;
     Book b[1000];
+    Student s[100];
+    Faculty f[100];
+    Guest g[100];
+    int userCount = 0;
+    int sCount = 0;
+    int fCount = 0;
+    int gCount = 0;
     int number = 0;
     do
     {
         int choice;
-        cout << "1. Add Books" << endl;
-        cout << "2. Update Book" << endl;
-        cout << "3. Display Information of All Books" << endl;
-        cout << "4. Display Information of a Book" << endl;
+        cout << "01. Add Books" << endl;
+        cout << "02. Update Book" << endl;
+        cout << "03. Display Information of All Books" << endl;
+        cout << "04. Display Information of a Book" << endl;
+        cout << "05. Add user" << endl;
+        cout << "06. Update user" << endl;
+        cout << "07. Display all users" << endl;
+        cout << "08. Display student users" << endl;
+        cout << "09. Display Faculty users" << endl;
+        cout << "10. Display Guest users" << endl;
+        cout << "11. Display a user" << endl;
+        cout << "12. Issue a book" << endl;
+        cout << "13. Return a book" << endl;
         cout << "Enter.." << endl;
         cin >> choice;
         if (choice == 1)
@@ -606,6 +629,227 @@ int main()
                     cout << "Book not found!" << endl;
                 }
             }
+        }
+        else if (choice == 5)
+        {
+            int n;
+            cout << "Enter number of users: " << endl;
+            cin >> n;
+            if (n < 0 || n > 100)
+            {
+                cout << "User cannot be created!!" << endl;
+            }
+            else
+            {
+                int uChoice;
+                cout << "1. Student users" << endl;
+                cout << "2. Faculty users" << endl;
+                cout << "3. Guest users" << endl;
+                cin >> uChoice;
+                userCount += n;
+
+                if (uChoice == 1)
+                {
+                    int start = sCount;
+                    sCount += n;
+                    for (int i = start; i < sCount; i++)
+                    {
+                        int id, age;
+                        string name;
+                        cout << "Enter User id, name and age" << endl;
+                        cin >> id >> name >> age;
+                        s[i] = Student(id, name, age);
+                    }
+                    for (int i = start; i < sCount; i++)
+                    {
+                        s[i].display();
+                    }
+                }
+                else if (uChoice == 2)
+                {
+                    int start = fCount;
+                    fCount += n;
+                    for (int i = start; i < fCount; i++)
+                    {
+                        int id, age;
+                        string name;
+                        cout << "Enter User id, name and age" << endl;
+                        cin >> id >> name >> age;
+                        f[i] = Faculty(id, name, age);
+                    }
+                    for (int i = start; i < fCount; i++)
+                    {
+                        f[i].display();
+                    }
+                }
+                else if (uChoice == 3)
+                {
+                    int start = gCount;
+                    gCount += n;
+                    for (int i = start; i < gCount; i++)
+                    {
+                        int id, age;
+                        string name;
+                        cout << "Enter User id, name and age" << endl;
+                        cin >> id >> name >> age;
+                        g[i] = Guest(id, name, age);
+                    }
+                    for (int i = start; i < gCount; i++)
+                    {
+                        g[i].display();
+                    }
+                }
+                else
+                {
+                    cout << "Invalid Choice!" << endl;
+                }
+            }
+        }
+        else if (choice == 6)
+        {
+            int userChoice;
+            cout << "1. Update Student user" << endl;
+            cout << "2. Update Faculty user" << endl;
+            cout << "3. Update Guest user" << endl;
+            cin >> userChoice;
+            int uChoice;
+            cout << "1. Update name:" << endl;
+            cout << "2. Update age:" << endl;
+            cout << "3. Update name and age:" << endl;
+            cout << "Enter.." << endl;
+            if (userChoice == 1)
+            {
+                int id;
+                cout << "Enter Id:" << endl;
+                cin >> id;
+                for (int i = 0; i < sCount; i++)
+                {
+                    if (id == s[i].getId())
+                    {
+                        if (uChoice == 1)
+                        {
+                            s[i].updateName();
+                        }
+                        else if (uChoice == 2)
+                        {
+                            s[i].updateAge();
+                        }
+                        else if (uChoice == 3)
+                        {
+                            s[i].updateUser();
+                        }
+                        else
+                        {
+                            cout << "Invalid Choice!!" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "User not found!" << endl;
+                    }
+                }
+            }
+            else if (userChoice == 2)
+            {
+                int id;
+                cout << "Enter Id:" << endl;
+                cin >> id;
+                for (int i = 0; i < fCount; i++)
+                {
+                    if (id == f[i].getId())
+                    {
+                        if (uChoice == 1)
+                        {
+                            f[i].updateName();
+                        }
+                        else if (uChoice == 2)
+                        {
+                            f[i].updateAge();
+                        }
+                        else if (uChoice == 3)
+                        {
+                            f[i].updateUser();
+                        }
+                        else
+                        {
+                            cout << "Invalid Choice!!" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "User not found!" << endl;
+                    }
+                }
+            }
+            else if (userChoice == 3)
+            {
+                int id;
+                cout << "Enter Id:" << endl;
+                cin >> id;
+                for (int i = 0; i < gCount; i++)
+                {
+                    if (id == g[i].getId())
+                    {
+                        if (uChoice == 1)
+                        {
+                            g[i].updateName();
+                        }
+                        else if (uChoice == 2)
+                        {
+                            g[i].updateAge();
+                        }
+                        else if (uChoice == 3)
+                        {
+                            g[i].updateUser();
+                        }
+                        else
+                        {
+                            cout << "Invalid Choice!!" << endl;
+                        }
+                    }
+                    else
+                    {
+                        cout << "User not found!" << endl;
+                    }
+                }
+            }
+            else
+            {
+                cout << "Invalid Choice" << endl;
+            }
+        }
+        else if (choice == 7)
+        {
+            for (int i = 0; i < sCount; i++)
+            {
+                s[i].display();
+            }
+            for (int i = 0; i < fCount; i++)
+            {
+                f[i].display();
+            }
+            for (int i = 0; i < gCount; i++)
+            {
+                g[i].display();
+            }
+        }
+        else if (choice == 8)
+        {
+        }
+        else if (choice == 9)
+        {
+        }
+        else if (choice == 10)
+        {
+        }
+        else if (choice == 11)
+        {
+        }
+        else if (choice == 12)
+        {
+        }
+        else if (choice == 13)
+        {
         }
         else
         {
