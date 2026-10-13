@@ -298,9 +298,13 @@ public:
     }
     User(string n, int a)
     {
+        userId = nextId++;
         name = n;
         age = a;
         borrowed = 0;
+        maxDaysAllowed = 0;
+        finePerDay = 0;
+        totalFine = 0;
     }
     void display()
     {
@@ -551,6 +555,7 @@ int main()
         else if (choice == 2)
         {
             int id;
+            int found;
             cout << "Enter ID of book" << endl;
             cin >> id;
             for (int i = 0; i < number; i++)
@@ -558,6 +563,7 @@ int main()
                 int bId = b[i].getId();
                 if (id == bId)
                 {
+                    found = 1;
                     int upCh;
                     cout << "This information is stored" << endl;
                     b[i].display();
@@ -600,10 +606,10 @@ int main()
                     }
                     break;
                 }
-                else
-                {
-                    cout << "Book not found!" << endl;
-                }
+            }
+            if (!found)
+            {
+                cout << "Book not found" << endl;
             }
         }
         else if (choice == 3)
@@ -615,6 +621,7 @@ int main()
         }
         else if (choice == 4)
         {
+            int found = 0;
             int id;
             cout << "Enter id of book:" << endl;
             cin >> id;
@@ -626,10 +633,10 @@ int main()
                     b[i].display();
                     break;
                 }
-                else
-                {
-                    cout << "Book not found!" << endl;
-                }
+            }
+            if (!found)
+            {
+                cout << "Book not found!" << endl;
             }
         }
         else if (choice == 5)
@@ -709,57 +716,47 @@ int main()
         }
         else if (choice == 6)
         {
-            int userChoice;
-            cout << "1. Update Student user" << endl;
-            cout << "2. Update Faculty user" << endl;
-            cout << "3. Update Guest user" << endl;
-            cin >> userChoice;
+            int id;
+            cout << "Enter User ID: " << endl;
+            cin >> id;
             int uChoice;
-            cout << "1. Update name:" << endl;
-            cout << "2. Update age:" << endl;
-            cout << "3. Update name and age:" << endl;
+            cout << "1. Update name" << endl;
+            cout << "2. Update age" << endl;
+            cout << "3. Update both" << endl;
             cout << "Enter.." << endl;
-            if (userChoice == 1)
+            cin >> uChoice;
+            int found = 0;
+            for (int i = 0; i < sCount; i++)
             {
-                int id;
-                cout << "Enter Id:" << endl;
-                cin >> id;
-                for (int i = 0; i < sCount; i++)
+                if (id == s[i].getId())
                 {
-                    if (id == s[i].getId())
+                    found = 1;
+                    if (uChoice == 1)
                     {
-                        if (uChoice == 1)
-                        {
-                            s[i].updateName();
-                        }
-                        else if (uChoice == 2)
-                        {
-                            s[i].updateAge();
-                        }
-                        else if (uChoice == 3)
-                        {
-                            s[i].updateUser();
-                        }
-                        else
-                        {
-                            cout << "Invalid Choice!!" << endl;
-                        }
+                        s[i].updateName();
+                    }
+                    else if (uChoice == 2)
+                    {
+                        s[i].updateAge();
+                    }
+                    else if (uChoice == 3)
+                    {
+                        s[i].updateUser();
                     }
                     else
                     {
-                        cout << "User not found!" << endl;
+                        cout << "Invalid Choice!" << endl;
                     }
+                    break;
                 }
             }
-            else if (userChoice == 2)
+            if (!found)
             {
-                int id;
-                cout << "Enter Id:" << endl;
-                cin >> id;
                 for (int i = 0; i < fCount; i++)
                 {
                     if (id == f[i].getId())
                     {
+                        found = 1;
                         if (uChoice == 1)
                         {
                             f[i].updateName();
@@ -774,24 +771,19 @@ int main()
                         }
                         else
                         {
-                            cout << "Invalid Choice!!" << endl;
+                            cout << "Invalid Choice!" << endl;
                         }
-                    }
-                    else
-                    {
-                        cout << "User not found!" << endl;
+                        break;
                     }
                 }
             }
-            else if (userChoice == 3)
+            if (!found)
             {
-                int id;
-                cout << "Enter Id:" << endl;
-                cin >> id;
                 for (int i = 0; i < gCount; i++)
                 {
                     if (id == g[i].getId())
                     {
+                        found = 1;
                         if (uChoice == 1)
                         {
                             g[i].updateName();
@@ -806,18 +798,15 @@ int main()
                         }
                         else
                         {
-                            cout << "Invalid Choice!!" << endl;
+                            cout << "Invalid Choice!" << endl;
                         }
-                    }
-                    else
-                    {
-                        cout << "User not found!" << endl;
+                        break;
                     }
                 }
             }
-            else
+            if (!found)
             {
-                cout << "Invalid Choice" << endl;
+                cout << "User not found!" << endl;
             }
         }
         else if (choice == 7)
@@ -902,6 +891,59 @@ int main()
         }
         else if (choice == 12)
         {
+            int id;
+            cout << "Enter User ID: " << endl;
+            cin >> id;
+            int found = 0;
+            for (int i = 0; i < sCount; i++)
+            {
+                if (id == s[i].getId())
+                {
+                    for (int j = i; j < sCount - 1; j++)
+                    {
+                        s[j] = s[j + 1];
+                    }
+                    sCount--;
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < fCount; i++)
+                {
+                    if (id == f[i].getId())
+                    {
+                        for (int j = i; j < fCount - 1; j++)
+                        {
+                            f[j] = f[j + 1];
+                        }
+                        fCount--;
+                        found = 1;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < gCount; i++)
+                {
+                    if (id == g[i].getId())
+                    {
+                        for (int j = i; j < gCount - 1; j++)
+                        {
+                            g[j] = g[j + 1];
+                        }
+                        gCount--;
+                        found = 1;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                cout << "User not found!" << endl;
+            }
         }
         else if (choice == 13)
         {
