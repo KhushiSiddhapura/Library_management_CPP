@@ -1,19 +1,21 @@
 #include <iostream>
 #include <string>
+#include <iomanip>
 using namespace std;
 
 class User;
 class Book
 {
+    static int nextBookId;
     int bookId;
     string bookName;
     int pages, available, issued;
 
 public:
     Book() {}
-    Book(int id, string name, int pgs, int avl, int iss)
+    Book(string name, int pgs, int avl, int iss)
     {
-        bookId = id;
+        bookId = nextBookId++;
         bookName = name;
         pages = pgs;
         available = avl;
@@ -29,47 +31,59 @@ public:
         pages = pgs;
         available = av;
         issued = iss;
-        cout << "Updated ";
+        cout << "Updated:" << endl;
+        displayBookHeading();
         display();
     }
     void update(string name)
     {
         bookName = name;
-        cout << "Updated ";
+        cout << "Updated:" << endl;
+        displayBookHeading();
         display();
     }
     void update(int pgs)
     {
         pages = pgs;
-        cout << "Updated ";
+        cout << "Updated:" << endl;
+        displayBookHeading();
         display();
     }
     void update(int avl, int iss)
     {
         available = avl;
         issued = iss;
-        cout << "Updated ";
+        cout << "Updated:" << endl;
+        displayBookHeading();
         display();
+    }
+    void displayBookHeading()
+    {
+        cout << left
+             << setw(8) << "Book ID"
+             << "|" << setw(25) << "Book Name"
+             << "|" << setw(6) << "Pages"
+             << "|" << setw(10) << "Available"
+             << "|" << setw(10) << "Issued" << endl;
+
+        cout << setfill('-') << setw(63) << "-" << setfill(' ') << endl;
     }
     void display()
     {
-        cout << "Book Details:" << endl;
-        cout << "-----------------------------------------" << endl;
-        cout << "Id: " << bookId << endl;
-        cout << "Name: " << bookName << endl;
-        cout << "Number of Pages: " << pages << endl;
-        cout << "Available Copies: " << available << endl;
-        cout << "Issued Copies: " << issued << endl;
-        cout << "-----------------------------------------" << endl;
+        cout << right << setfill('0') << setw(8) << bookId
+             << setfill(' ') << left
+             << "|" << setw(25) << bookName
+             << "|" << right << setw(6) << pages
+             << "|" << setw(10) << available
+             << "|" << setw(10) << issued << endl;
     }
     friend void issueBook(User &u, Book &b);
     friend void returnBook(User &u, Book &b);
 };
-
 class Date
 {
     int date, month, year;
-    
+
     int isLeapYear(int y)
     {
         if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
@@ -81,7 +95,8 @@ class Date
             return 0;
         }
     }
-    public:
+
+public:
     Date()
     {
         date = 1;
@@ -90,86 +105,53 @@ class Date
     }
     Date(int d, int m, int y)
     {
-        if (y >= 2000)
+        if (y < 2000)
         {
-            year = y;
+            throw 1;
         }
-        else
+        if (m < 1 || m > 12)
         {
-            year = 2000;
-            cout << "Entered year is invalid!" << endl
-                 << "Setting it to default year(2000)" << endl;
+            throw 1;
         }
-        if (m > 0 && m <= 12)
+        int maxDays;
+        if (m == 4 || m == 6 || m == 9 || m == 11)
         {
-            month = m;
-            if (m == 4 || m == 6 || m == 9 || m == 11)
+            maxDays = 30;
+        }
+        else if (m == 2)
+        {
+            if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
             {
-                if (d > 0 && d <= 30)
-                {
-                    date = d;
-                }
-                else
-                {
-                    date = 1;
-                    cout << "Entered date is invalid" << endl
-                         << "Setting it to default date(1)" << endl;
-                }
-            }
-            else if (m == 2)
-            {
-                if (isLeapYear(year))
-                {
-                    if (d > 0 && d <= 29)
-                    {
-                        date = d;
-                    }
-                    else
-                    {
-                        date = 1;
-                        cout << "Entered date is invalid" << endl
-                             << "Setting it to default date(1)" << endl;
-                    }
-                }
-                else
-                {
-                    if (d > 0 && d <= 28)
-                    {
-                        date = d;
-                    }
-                    else
-                    {
-                        date = 1;
-                        cout << "Entered date is invalid" << endl
-                             << "Setting it to default date(1)" << endl;
-                    }
-                }
+                maxDays = 29;
             }
             else
             {
-                if (d > 0 && d <= 31)
-                {
-                    date = d;
-                }
-                else
-                {
-                    date = 1;
-                    cout << "Entered date is invalid" << endl
-                         << "Setting it to default date(1)" << endl;
-                }
+                maxDays = 28;
             }
         }
         else
         {
-            month = 1;
-            date = 1;
-            cout << "Entered month is invalid" << endl
-                 << "Setting date and month to default (1st January)" << endl;
+            maxDays = 31;
         }
+        if (d < 1 || d > maxDays)
+        {
+            throw 1;
+        }
+        date = d;
+        month = m;
+        year = y;
     }
     void displayDate()
     {
         cout << date << "/" << month << "/" << year << endl;
+    }
+    void displayDateFormatted()
+    {
+        cout << setfill('0')
+             << setw(2) << date << "/"
+             << setw(2) << month << "/"
+             << setw(4) << year
+             << setfill(' ');
     }
     int getDays()
     {
@@ -212,7 +194,6 @@ class Date
         }
     }
 };
-
 class IssuedBook
 {
     int IssuedBId;
@@ -233,17 +214,24 @@ public:
     {
         return issueDate;
     }
+    void displayIssuedBookHeading()
+    {
+        cout << left
+             << setw(10) << "Book ID"
+             << "|" << setw(10) << "Issue Date" << endl;
+
+        cout << setfill('-') << setw(21) << "-" << setfill(' ') << endl;
+    }
     void display()
     {
-        cout << "-----------------------------------------" << endl;
-        cout << "Issued Book:" << endl;
-        cout << "-----------------------------------------" << endl;
-        cout << "Book Id: " << IssuedBId << endl;
-        cout << "Issued date";
-        issueDate.displayDate();
+        cout << setfill('0') << right << setw(3) << IssuedBId
+             << setfill(' ') << left << setw(7) << ""
+             << "|";
+
+        issueDate.displayDateFormatted();
+        cout << endl;
     }
 };
-
 class User
 {
 protected:
@@ -261,7 +249,7 @@ protected:
 public:
     User()
     {
-        userId = nextId++;
+        userId = 0;
         name = "";
         age = 0;
         borrowed = 0;
@@ -279,11 +267,26 @@ public:
         finePerDay = 0;
         totalFine = 0;
     }
+    void displayUserHeading()
+    {
+        cout << left
+             << setw(8) << "User ID"
+             << "|" << setw(25) << "Name"
+             << "|" << setw(6) << "Age"
+             << "|" << setw(8) << "Type" << endl;
+
+        cout << setfill('-') << setw(50) << "-" << setfill(' ') << endl;
+    }
     void display()
     {
-        cout << "User ID: " << userId << endl;
-        cout << "Name: " << name << endl;
-        cout << "Age: " << age << endl;
+        cout << resetiosflags(ios::left)
+             << setw(5) << ""
+             << setfill('0') << setw(3) << userId
+             << setfill(' ')
+             << setiosflags(ios::left)
+             << "|" << setw(25) << name
+             << resetiosflags(ios::left)
+             << "|" << setw(6) << age;
     }
     int getId()
     {
@@ -295,26 +298,39 @@ public:
     }
     void updateName()
     {
-        display();
         cout << "Enter updated name of user:" << endl;
         cin >> name;
+        cout << "Updated:" << endl;
     }
     void updateAge()
     {
-        display();
         cout << "Enter updated age of user:" << endl;
         cin >> age;
+        cout << "Updated:" << endl;
     }
     void updateUser()
     {
-        display();
         cout << "Enter updated name and age of user:" << endl;
         cin >> name >> age;
+        cout << "Updated:" << endl;
+    }
+    void displayIssuedBooks()
+    {
+        if (borrowed == 0)
+        {
+            cout << "This user has not issued any books!" << endl;
+            return;
+        }
+        cout << "Books issued by " << name << ":" << endl;
+        books[0].displayIssuedBookHeading();
+        for (int i = 0; i < borrowed; i++)
+        {
+            books[i].display();
+        }
     }
     friend void issueBook(User &u, Book &b);
     friend void returnBook(User &u, Book &b);
 };
-
 class Student : public User
 {
 public:
@@ -330,10 +346,9 @@ public:
     void display()
     {
         User::display();
-        cout << "Type: " << type << endl;
+        cout << "|" << setw(8) << type << endl;
     }
 };
-
 class Faculty : public User
 {
 public:
@@ -349,10 +364,9 @@ public:
     void display()
     {
         User::display();
-        cout << "Type: " << type << endl;
+        cout << "|" << setw(8) << type << endl;
     }
 };
-
 class Guest : public User
 {
 public:
@@ -368,10 +382,29 @@ public:
     void display()
     {
         User::display();
-        cout << "Type: " << type << endl;
+        cout << "|" << setw(8) << type << endl;
     }
 };
-
+Date enterDate()
+{
+    int flag = 0;
+    int d, m, y;
+    while (!flag)
+    {
+        try
+        {
+            cout << "Enter date, month and year:" << endl;
+            cin >> d >> m >> y;
+            Date temp(d, m, y);
+            flag = 1;
+            return temp;
+        }
+        catch (int e)
+        {
+            cout << "Invalid date! Please enter again." << endl;
+        }
+    }
+}
 void issueBook(User &u, Book &b)
 {
     if (u.borrowed >= 10)
@@ -385,10 +418,8 @@ void issueBook(User &u, Book &b)
         return;
     }
     int id = b.bookId;
-    int d, m, y;
-    cout << "Enter today's date, month and year: " << endl;
-    cin >> d >> m >> y;
-    Date issuedDate(d, m, y);
+    cout << "Enter today's issue date:" << endl;
+    Date issuedDate = enterDate();
     IssuedBook isb(id, issuedDate);
     u.books[u.borrowed] = isb;
     u.borrowed++;
@@ -397,8 +428,8 @@ void issueBook(User &u, Book &b)
     cout << "-----------------------------------------" << endl;
     cout << "Book Issued!!" << endl;
     cout << "-----------------------------------------" << endl;
+    u.displayIssuedBooks();
 }
-
 void returnBook(User &u, Book &b)
 {
     int found = 0;
@@ -408,10 +439,8 @@ void returnBook(User &u, Book &b)
         if (tempId == b.bookId)
         {
             found = 1;
-            int d, m, y;
-            cout << "Enter today's date,month and year:" << endl;
-            cin >> d >> m >> y;
-            Date today(d, m, y);
+            cout << "Enter today's return date:" << endl;
+            Date today = enterDate();
             int d1 = today.getDays();
             Date issue = u.books[i].getIssuedDate();
             int d2 = issue.getDays();
@@ -423,11 +452,11 @@ void returnBook(User &u, Book &b)
             if (d1 - d2 > u.maxDaysAllowed)
             {
                 int delay = d1 - d2 - u.maxDaysAllowed;
-                u.totalFine = delay * u.finePerDay;
+                u.totalFine += delay * u.finePerDay;
                 cout << "You are returning this book " << delay << " days late!" << endl;
                 cout << "Pay Fine of rupees: " << u.totalFine;
                 int paid = 0;
-                cout << "1. If it is paid" << endl;
+                cout << "Enter 1: If it is paid" << endl;
                 cout << "Enter.." << endl;
                 cin >> paid;
                 if (paid == 1)
@@ -440,6 +469,10 @@ void returnBook(User &u, Book &b)
                     u.borrowed--;
                     b.available++;
                     b.issued--;
+                    cout << "-----------------------------------------" << endl;
+                    cout << "Book returned!!" << endl;
+                    cout << "-----------------------------------------" << endl;
+                    u.displayIssuedBooks();
                 }
                 else
                 {
@@ -456,6 +489,10 @@ void returnBook(User &u, Book &b)
                 u.borrowed--;
                 b.available++;
                 b.issued--;
+                cout << "-----------------------------------------" << endl;
+                cout << "Book returned!!" << endl;
+                cout << "-----------------------------------------" << endl;
+                u.displayIssuedBooks();
             }
             break;
         }
@@ -465,7 +502,7 @@ void returnBook(User &u, Book &b)
         cout << "This book is not issued by this user!!" << endl;
     }
 }
-
+int Book::nextBookId = 1;
 int User::nextId = 1;
 int main()
 {
@@ -499,6 +536,7 @@ int main()
         cout << "12. Remove User" << endl;
         cout << "13. Issue a book" << endl;
         cout << "14. Return a book" << endl;
+        cout << "15. Display Books Issued by a User" << endl;
         cout << "Enter.." << endl;
         cin >> choice;
         if (choice == 1)
@@ -516,13 +554,14 @@ int main()
                 number += n;
                 for (int i = start; i < number; i++)
                 {
-                    int id, pgs, avl, iss;
+                    int pgs, avl, iss;
                     string name;
                     cout << "Enter Details of " << n << " books" << endl;
-                    cout << "Enter Book ID, name, pages, avaiable copies and issued copies:" << endl;
-                    cin >> id >> name >> pgs >> avl >> iss;
-                    b[i] = Book(id, name, pgs, avl, iss);
+                    cout << "Enter Book name, pages, avaiable copies and issued copies:" << endl;
+                    cin >> name >> pgs >> avl >> iss;
+                    b[i] = Book(name, pgs, avl, iss);
                 }
+                b[0].displayBookHeading();
                 for (int i = start; i < number; i++)
                 {
                     b[i].display();
@@ -543,6 +582,7 @@ int main()
                     found = 1;
                     int upCh;
                     cout << "This information is stored" << endl;
+                    b[i].displayBookHeading();
                     b[i].display();
                     int pgs, avl, iss;
                     string name;
@@ -591,6 +631,7 @@ int main()
         }
         else if (choice == 3)
         {
+            b[0].displayBookHeading();
             for (int i = 0; i < number; i++)
             {
                 b[i].display();
@@ -608,6 +649,7 @@ int main()
                 if (bId == id)
                 {
                     found = 1;
+                    b[i].displayBookHeading();
                     b[i].display();
                     break;
                 }
@@ -636,7 +678,6 @@ int main()
 
                 if (uChoice == 1)
                 {
-                    userCount += n;
                     if (100 - sCount < n)
                     {
                         cout << "Could not create student users!" << endl;
@@ -654,6 +695,7 @@ int main()
                             cin >> name >> age;
                             s[i] = Student(name, age);
                         }
+                        s[0].displayUserHeading();
                         for (int i = start; i < sCount; i++)
                         {
                             s[i].display();
@@ -679,6 +721,7 @@ int main()
                             cin >> name >> age;
                             f[i] = Faculty(name, age);
                         }
+                        f[0].displayUserHeading();
                         for (int i = start; i < fCount; i++)
                         {
                             f[i].display();
@@ -704,6 +747,7 @@ int main()
                             cin >> name >> age;
                             g[i] = Guest(name, age);
                         }
+                        g[0].displayUserHeading();
                         for (int i = start; i < gCount; i++)
                         {
                             g[i].display();
@@ -735,15 +779,27 @@ int main()
                     found = 1;
                     if (uChoice == 1)
                     {
+                        s[i].displayUserHeading();
+                        s[i].display();
                         s[i].updateName();
+                        s[i].displayUserHeading();
+                        s[i].display();
                     }
                     else if (uChoice == 2)
                     {
+                        s[i].displayUserHeading();
+                        s[i].display();
                         s[i].updateAge();
+                        s[i].displayUserHeading();
+                        s[i].display();
                     }
                     else if (uChoice == 3)
                     {
+                        s[i].displayUserHeading();
+                        s[i].display();
                         s[i].updateUser();
+                        s[i].displayUserHeading();
+                        s[i].display();
                     }
                     else
                     {
@@ -761,15 +817,27 @@ int main()
                         found = 1;
                         if (uChoice == 1)
                         {
+                            f[i].displayUserHeading();
+                            f[i].display();
                             f[i].updateName();
+                            f[i].displayUserHeading();
+                            f[i].display();
                         }
                         else if (uChoice == 2)
                         {
+                            f[i].displayUserHeading();
+                            f[i].display();
                             f[i].updateAge();
+                            f[i].displayUserHeading();
+                            f[i].display();
                         }
                         else if (uChoice == 3)
                         {
+                            f[i].displayUserHeading();
+                            f[i].display();
                             f[i].updateUser();
+                            f[i].displayUserHeading();
+                            f[i].display();
                         }
                         else
                         {
@@ -788,15 +856,27 @@ int main()
                         found = 1;
                         if (uChoice == 1)
                         {
+                            g[i].displayUserHeading();
+                            g[i].display();
                             g[i].updateName();
+                            g[i].displayUserHeading();
+                            g[i].display();
                         }
                         else if (uChoice == 2)
                         {
+                            g[i].displayUserHeading();
+                            g[i].display();
                             g[i].updateAge();
+                            g[i].displayUserHeading();
+                            g[i].display();
                         }
                         else if (uChoice == 3)
                         {
+                            g[i].displayUserHeading();
+                            g[i].display();
                             g[i].updateUser();
+                            g[i].displayUserHeading();
+                            g[i].display();
                         }
                         else
                         {
@@ -813,6 +893,7 @@ int main()
         }
         else if (choice == 7)
         {
+            s[0].displayUserHeading();
             for (int i = 0; i < sCount; i++)
             {
                 s[i].display();
@@ -828,6 +909,7 @@ int main()
         }
         else if (choice == 8)
         {
+            s[0].displayUserHeading();
             for (int i = 0; i < sCount; i++)
             {
                 s[i].display();
@@ -835,6 +917,7 @@ int main()
         }
         else if (choice == 9)
         {
+            f[0].displayUserHeading();
             for (int i = 0; i < fCount; i++)
             {
                 f[i].display();
@@ -842,6 +925,7 @@ int main()
         }
         else if (choice == 10)
         {
+            g[0].displayUserHeading();
             for (int i = 0; i < gCount; i++)
             {
                 g[i].display();
@@ -903,6 +987,7 @@ int main()
                 {
                     if (s[i].getBorrowed() > 0)
                     {
+                        found = 1;
                         cout << "User has borrowed book!" << endl;
                         cout << "User deletation failed!" << endl;
                     }
@@ -914,6 +999,9 @@ int main()
                         }
                         sCount--;
                         found = 1;
+                        cout << "-----------------------------------------" << endl;
+                        cout << "User Removed" << endl;
+                        cout << "-----------------------------------------" << endl;
                         break;
                     }
                 }
@@ -926,6 +1014,7 @@ int main()
                     {
                         if (f[i].getBorrowed() > 0)
                         {
+                            found = 1;
                             cout << "User has borrowed book!" << endl;
                             cout << "User deletation failed!" << endl;
                         }
@@ -937,6 +1026,9 @@ int main()
                             }
                             fCount--;
                             found = 1;
+                            cout << "-----------------------------------------" << endl;
+                            cout << "User Removed" << endl;
+                            cout << "-----------------------------------------" << endl;
                             break;
                         }
                     }
@@ -950,6 +1042,7 @@ int main()
                     {
                         if (g[i].getBorrowed() > 0)
                         {
+                            found = 1;
                             cout << "User has borrowed book!" << endl;
                             cout << "User deletation failed!" << endl;
                         }
@@ -961,6 +1054,9 @@ int main()
                             }
                             gCount--;
                             found = 1;
+                            cout << "-----------------------------------------" << endl;
+                            cout << "User Removed" << endl;
+                            cout << "-----------------------------------------" << endl;
                             break;
                         }
                     }
@@ -1089,11 +1185,55 @@ int main()
                 cout << "Book not found!" << endl;
             }
         }
+        else if (choice == 15)
+        {
+            int id;
+            int found = 0;
+            cout << "Enter User ID:" << endl;
+            cin >> id;
+            for (int i = 0; i < sCount; i++)
+            {
+                if (s[i].getId() == id)
+                {
+                    s[i].displayIssuedBooks();
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < fCount; i++)
+                {
+                    if (f[i].getId() == id)
+                    {
+                        f[i].displayIssuedBooks();
+                        found = 1;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                for (int i = 0; i < gCount; i++)
+                {
+                    if (g[i].getId() == id)
+                    {
+                        g[i].displayIssuedBooks();
+                        found = 1;
+                        break;
+                    }
+                }
+            }
+            if (!found)
+            {
+                cout << "User not found!" << endl;
+            }
+        }
         else
         {
             cout << "Invalid Choice!" << endl;
         }
-        cout << "Do you want to continue?" << endl;
+        cout << "Do you want to continue?(Enter y for yes)" << endl;
         cin >> ch;
     } while (ch == 'y' || ch == 'Y');
     cout << "-----------------------------------------" << endl;
