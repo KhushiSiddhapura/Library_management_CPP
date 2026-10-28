@@ -70,10 +70,10 @@ public:
     }
     void display()
     {
-        cout << right << setfill('0') << setw(8) << bookId
-             << setfill(' ') << left
+        cout << setiosflags(ios::right) << setw(5) << "" << setfill('0') << setw(3) << bookId
+             << setfill(' ') << setiosflags(ios::left)
              << "|" << setw(25) << bookName
-             << "|" << right << setw(6) << pages
+             << "|" << setw(6) << pages
              << "|" << setw(10) << available
              << "|" << setw(10) << issued << endl;
     }
@@ -120,7 +120,7 @@ public:
         }
         else if (m == 2)
         {
-            if ((y % 4 == 0 && y % 100 != 0) || y % 400 == 0)
+            if (isLeapYear(y))
             {
                 maxDays = 29;
             }
@@ -141,13 +141,9 @@ public:
         month = m;
         year = y;
     }
-    void displayDate()
-    {
-        cout << date << "/" << month << "/" << year << endl;
-    }
     void displayDateFormatted()
     {
-        cout << setfill('0')
+        cout <<setiosflags(ios::right)<< setfill('0')
              << setw(2) << date << "/"
              << setw(2) << month << "/"
              << setw(4) << year
@@ -216,7 +212,7 @@ public:
     }
     void displayIssuedBookHeading()
     {
-        cout << left
+        cout << setiosflags(ios::left)
              << setw(10) << "Book ID"
              << "|" << setw(10) << "Issue Date" << endl;
 
@@ -399,7 +395,7 @@ Date enterDate()
             flag = 1;
             return temp;
         }
-        catch (int e)
+        catch (int i)
         {
             cout << "Invalid date! Please enter again." << endl;
         }
@@ -454,9 +450,10 @@ void returnBook(User &u, Book &b)
                 int delay = d1 - d2 - u.maxDaysAllowed;
                 u.totalFine = delay * u.finePerDay;
                 cout << "You are returning this book " << delay << " days late!" << endl;
-                cout << "Pay Fine of rupees: " << u.totalFine;
+                cout << "Pay Fine of rupees: " << u.totalFine << endl;
                 int paid = 0;
                 cout << "Enter 1: If it is paid" << endl;
+                cout << "Enter 0: If not" << endl;
                 cout << "Enter.." << endl;
                 cin >> paid;
                 if (paid == 1)
@@ -492,6 +489,7 @@ void returnBook(User &u, Book &b)
                 cout << "-----------------------------------------" << endl;
                 cout << "Book returned!!" << endl;
                 cout << "-----------------------------------------" << endl;
+
                 u.displayIssuedBooks();
             }
             break;
@@ -556,7 +554,7 @@ int main()
                 {
                     int pgs, avl, iss;
                     string name;
-                    cout << "Enter Details of " << n << " books" << endl;
+                    cout << "Enter Details of " << i + 1 << " book" << endl;
                     cout << "Enter Book name, pages, avaiable copies and issued copies:" << endl;
                     cin >> name >> pgs >> avl >> iss;
                     b[i] = Book(name, pgs, avl, iss);
@@ -941,6 +939,7 @@ int main()
             {
                 if (id == s[i].getId())
                 {
+                    s[i].displayUserHeading();
                     s[i].display();
                     found = 1;
                     break;
@@ -952,6 +951,7 @@ int main()
                 {
                     if (id == f[i].getId())
                     {
+                        f[i].displayUserHeading();
                         f[i].display();
                         found = 1;
                         break;
@@ -964,6 +964,7 @@ int main()
                 {
                     if (id == g[i].getId())
                     {
+                        g[i].displayUserHeading();
                         g[i].display();
                         found = 1;
                         break;
