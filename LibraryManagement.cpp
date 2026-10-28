@@ -452,7 +452,7 @@ void returnBook(User &u, Book &b)
             if (d1 - d2 > u.maxDaysAllowed)
             {
                 int delay = d1 - d2 - u.maxDaysAllowed;
-                u.totalFine += delay * u.finePerDay;
+                u.totalFine = delay * u.finePerDay;
                 cout << "You are returning this book " << delay << " days late!" << endl;
                 cout << "Pay Fine of rupees: " << u.totalFine;
                 int paid = 0;
